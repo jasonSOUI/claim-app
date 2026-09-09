@@ -117,3 +117,22 @@ INSERT INTO public.claim_hospitals (name)
 VALUES 
     ('亞東醫院')
 ON CONFLICT (name) DO NOTHING;
+-- 1. 建立存放文件紀錄的資料表
+CREATE TABLE IF NOT EXISTS public.claim_treatment_documents (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    treatment_id uuid REFERENCES public.claim_treatments(id) ON DELETE CASCADE,
+    file_name text NOT NULL,
+    file_url text NOT NULL,
+    file_type text,
+    created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 開啟 RLS 並設定全域允許 (BYOD 單人模式)
+ALTER TABLE public.claim_treatment_documents ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow all actions on claim_treatment_documents" ON public.claim_treatment_documents FOR ALL USING (true);
+
+-- 2. 建立 Storage Bucket (需具有超級權限才能以此方式建立，若執行失敗，請依照下方說明改用介面手動建立)
+INSERT INTO storage.buckets (id, name, public) VALUES ('receipts', 'receipts', true) ON CONFLICT DO NOTHING;
+
+-- 開啟 Storage Bucket 的 RLS 並允許所有操作 (針對 receipts Bucket)
+CREATE POLICY "Public Access" ON storage.objects FOR ALL USING (bucket_id = 'receipts');
