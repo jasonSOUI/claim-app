@@ -136,3 +136,11 @@ INSERT INTO storage.buckets (id, name, public) VALUES ('receipts', 'receipts', t
 
 -- 開啟 Storage Bucket 的 RLS 並允許所有操作 (針對 receipts Bucket)
 CREATE POLICY "Public Access" ON storage.objects FOR ALL USING (bucket_id = 'receipts');
+-- 刪除舊的 Policy
+DROP POLICY IF EXISTS "Public Access" ON storage.objects;
+
+-- 重新建立允許「任何人」對 receipts 進行上傳、讀取、刪除的詳細 Policy
+CREATE POLICY "Allow Public Insert" ON storage.objects FOR INSERT TO public WITH CHECK (bucket_id = 'receipts');
+CREATE POLICY "Allow Public Select" ON storage.objects FOR SELECT TO public USING (bucket_id = 'receipts');
+CREATE POLICY "Allow Public Update" ON storage.objects FOR UPDATE TO public USING (bucket_id = 'receipts');
+CREATE POLICY "Allow Public Delete" ON storage.objects FOR DELETE TO public USING (bucket_id = 'receipts');
