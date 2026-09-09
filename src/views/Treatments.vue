@@ -256,7 +256,7 @@ const deleteDocument = async (docId, fileUrl) => {
                 </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-lg text-slate-900 dark:text-slate-100 text-right font-mono font-bold">${{ item.amount.toLocaleString() }}</td>
-              <td class="px-6 py-4 text-lg text-slate-500 dark:text-slate-400 max-w-xs truncate">{{ item.notes }}</td>
+              <td class="px-6 py-4 text-lg text-slate-500 dark:text-slate-400 max-w-[150px] truncate" :title="item.notes">{{ item.notes }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-lg font-medium">
                 <div class="flex justify-end items-center space-x-1">
                   <!-- 文件管理按鈕 -->
