@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { supabase } from '../supabase'
-import { Plus, Edit2, Trash2, X, Search, Paperclip, FileUp, Loader2, Download } from 'lucide-vue-next'
+import { Plus, Edit2, Trash2, X, Search, Paperclip, FileUp, Loader2, Download, ArrowUp, ArrowDown } from 'lucide-vue-next'
 import imageCompression from 'browser-image-compression'
 
 const treatments = ref([])
@@ -16,6 +16,37 @@ const isDocsModalOpen = ref(false)
 const selectedTreatmentForDocs = ref(null)
 const treatmentDocuments = ref([])
 const isUploading = ref(false)
+
+// 排序狀態
+const sortKey = ref('treatment_date')
+const sortOrder = ref('desc')
+
+const sortBy = (key) => {
+  if (sortKey.value === key) {
+    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortKey.value = key
+    // 數字或日期通常預設大到小比較符合直覺
+    sortOrder.value = 'desc'
+  }
+}
+
+const sortedTreatments = computed(() => {
+  return [...treatments.value].sort((a, b) => {
+    let valA = a[sortKey.value]
+    let valB = b[sortKey.value]
+
+    // 特殊處理醫院名稱的排序
+    if (sortKey.value === 'hospital_name') {
+      valA = a.claim_hospitals?.name || ''
+      valB = b.claim_hospitals?.name || ''
+    }
+
+    if (valA < valB) return sortOrder.value === 'asc' ? -1 : 1
+    if (valA > valB) return sortOrder.value === 'asc' ? 1 : -1
+    return 0
+  })
+})
 
 const sortedAssociatedClaims = computed(() => {
   if (!selectedTreatmentForClaims.value?.claim_record_treatments) return []
@@ -46,7 +77,6 @@ const fetchTreatments = async () => {
       ),
       claim_treatment_documents (id)
     `)
-    .order('treatment_date', { ascending: false })
   
   if (data) treatments.value = data
   isLoading.value = false
@@ -154,7 +184,7 @@ const handleFileUpload = async (event) => {
     // 如果是圖片，進行無損壓縮以節省空間
     if (file.type.startsWith('image/')) {
       const options = {
-        maxSizeMB: 0.3, // 壓縮到 300KB 以內
+        maxSizeMB: 0.3,
         maxWidthOrHeight: 1920,
         useWebWorker: true
       }
@@ -194,15 +224,14 @@ const handleFileUpload = async (event) => {
   }
 
   isUploading.value = false
-  event.target.value = '' // 清空 input
+  event.target.value = '' 
   await fetchDocuments(treatmentId)
-  fetchTreatments() // 更新列表上的附件數量標示
+  fetchTreatments()
 }
 
 const deleteDocument = async (docId, fileUrl) => {
   if (!confirm('確定要刪除這份文件嗎？此操作無法還原。')) return
 
-  // 從 URL 萃取出 path (例如 treatment_id/filename.jpg)
   const urlParts = fileUrl.split('/receipts/')
   if (urlParts.length > 1) {
     const filePath = urlParts[1]
@@ -236,18 +265,50 @@ const deleteDocument = async (docId, fileUrl) => {
 
       <div v-else class="overflow-x-auto flex-1 p-2">
         <table class="min-w-full divide-y divide-white/20 dark:divide-slate-700/50">
-          <thead class="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md sticky top-0 z-10 rounded-t-2xl">
+          <thead class="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md sticky top-0 z-10 rounded-t-2xl select-none">
             <tr>
-              <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider rounded-tl-2xl">日期</th>
-              <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">療程名稱</th>
-              <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">醫院</th>
-              <th scope="col" class="px-6 py-4 text-right text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">花費金額</th>
+              <th scope="col" @click="sortBy('treatment_date')" class="px-6 py-4 text-left text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider rounded-tl-2xl cursor-pointer hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors">
+                <div class="flex items-center">
+                  日期
+                  <span v-if="sortKey === 'treatment_date'" class="ml-1 text-slate-700 dark:text-slate-200">
+                    <ArrowUp v-if="sortOrder === 'asc'" class="w-4 h-4" />
+                    <ArrowDown v-else class="w-4 h-4" />
+                  </span>
+                </div>
+              </th>
+              <th scope="col" @click="sortBy('title')" class="px-6 py-4 text-left text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors">
+                <div class="flex items-center">
+                  療程名稱
+                  <span v-if="sortKey === 'title'" class="ml-1 text-slate-700 dark:text-slate-200">
+                    <ArrowUp v-if="sortOrder === 'asc'" class="w-4 h-4" />
+                    <ArrowDown v-else class="w-4 h-4" />
+                  </span>
+                </div>
+              </th>
+              <th scope="col" @click="sortBy('hospital_name')" class="px-6 py-4 text-left text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors">
+                <div class="flex items-center">
+                  醫院
+                  <span v-if="sortKey === 'hospital_name'" class="ml-1 text-slate-700 dark:text-slate-200">
+                    <ArrowUp v-if="sortOrder === 'asc'" class="w-4 h-4" />
+                    <ArrowDown v-else class="w-4 h-4" />
+                  </span>
+                </div>
+              </th>
+              <th scope="col" @click="sortBy('amount')" class="px-6 py-4 text-right text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors">
+                <div class="flex items-center justify-end">
+                  花費金額
+                  <span v-if="sortKey === 'amount'" class="ml-1 text-slate-700 dark:text-slate-200">
+                    <ArrowUp v-if="sortOrder === 'asc'" class="w-4 h-4" />
+                    <ArrowDown v-else class="w-4 h-4" />
+                  </span>
+                </div>
+              </th>
               <th scope="col" class="px-6 py-4 text-left text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">備註</th>
               <th scope="col" class="relative px-6 py-4 rounded-tr-2xl"><span class="sr-only">操作</span></th>
             </tr>
           </thead>
           <tbody class="divide-y divide-white/10 dark:divide-slate-700/30">
-            <tr v-for="item in treatments" :key="item.id" class="hover:bg-sky-100/80 dark:hover:bg-sky-900/50 transition-all duration-200 group">
+            <tr v-for="item in sortedTreatments" :key="item.id" class="hover:bg-sky-100/80 dark:hover:bg-sky-900/50 transition-all duration-200 group">
               <td class="px-6 py-4 whitespace-nowrap text-lg text-slate-600 dark:text-slate-300">{{ item.treatment_date }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-lg font-bold text-slate-900 dark:text-slate-100">{{ item.title }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-lg text-slate-500">
@@ -282,7 +343,8 @@ const deleteDocument = async (docId, fileUrl) => {
       </div>
     </div>
 
-    <!-- Edit/Create Modal (保留未改) -->
+    <!-- 其餘 Modal 保持不變 (編輯、查看理賠、文件上傳) -->
+    <!-- Edit/Create Modal -->
     <div v-if="isModalOpen" class="fixed inset-0 z-50 overflow-y-auto">
       <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
         <div class="fixed inset-0 transition-opacity bg-slate-900/40 backdrop-blur-sm" @click="closeModal"></div>
@@ -336,7 +398,7 @@ const deleteDocument = async (docId, fileUrl) => {
       </div>
     </div>
 
-    <!-- View Claims Modal (保留未改) -->
+    <!-- View Claims Modal -->
     <div v-if="isViewClaimsModalOpen" class="fixed inset-0 z-50 overflow-y-auto">
       <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
         <div class="fixed inset-0 transition-opacity bg-slate-900/40 backdrop-blur-sm" @click="closeViewClaims"></div>
@@ -394,7 +456,6 @@ const deleteDocument = async (docId, fileUrl) => {
                 {{ selectedTreatmentForDocs.title }} <span class="text-base text-slate-500 font-normal">({{ selectedTreatmentForDocs.treatment_date }})</span>
               </p>
               
-              <!-- 上傳按鈕 -->
               <label class="relative inline-flex items-center justify-center px-4 py-2 bg-amber-500 text-white text-base font-bold rounded-xl hover:bg-amber-600 shadow-lg shadow-amber-500/30 transition-all cursor-pointer transform hover:scale-105 active:scale-95" :class="{'opacity-50 cursor-not-allowed': isUploading}">
                 <Loader2 v-if="isUploading" class="w-4 h-4 mr-2 animate-spin" />
                 <FileUp v-else class="w-4 h-4 mr-2" />
@@ -408,10 +469,8 @@ const deleteDocument = async (docId, fileUrl) => {
                 尚無任何文件，點擊上方按鈕上傳收據或診斷證明。
               </div>
 
-              <!-- 文件卡片 -->
               <div v-for="doc in treatmentDocuments" :key="doc.id" class="group bg-white/50 dark:bg-slate-800/50 p-4 rounded-xl border border-white/40 dark:border-slate-700/50 flex justify-between items-center shadow-sm hover:shadow-md transition-all">
                 <div class="flex items-center space-x-4 overflow-hidden">
-                  <!-- 縮圖或圖示 -->
                   <div class="w-16 h-16 rounded-lg bg-slate-200 dark:bg-slate-700 flex-shrink-0 flex items-center justify-center overflow-hidden shadow-inner">
                     <img v-if="doc.file_type?.startsWith('image/')" :src="doc.file_url" class="w-full h-full object-cover" />
                     <span v-else class="text-2xl font-bold text-slate-400">PDF</span>
