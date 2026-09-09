@@ -30,7 +30,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const url = localStorage.getItem('SUPABASE_URL')
-  const key = localStorage.getItem('SUPABASE_ANON_KEY')
+  const key = localStorage.getItem('SUPABASE_SECRET_KEYS')
   
   if (to.name !== 'Setup' && (!url || !key)) {
     next({ name: 'Setup' })
