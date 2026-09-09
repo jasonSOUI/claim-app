@@ -347,7 +347,7 @@ const deleteDocument = async (docId, fileUrl) => {
     <!-- Edit/Create Modal -->
     <div v-if="isModalOpen" class="fixed inset-0 z-50 overflow-y-auto">
       <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
-        <div class="fixed inset-0 transition-opacity bg-slate-900/40 backdrop-blur-sm" @click="closeModal"></div>
+        <div class="fixed inset-0 transition-opacity bg-slate-900/40 backdrop-blur-sm"></div>
         <div class="relative inline-block w-full max-w-md p-8 overflow-hidden text-left align-middle transition-all transform glass-panel rounded-3xl shadow-2xl">
           <div class="flex justify-between items-center mb-6">
             <h3 class="text-xl font-bold leading-6 text-slate-900 dark:text-slate-100">
@@ -401,7 +401,7 @@ const deleteDocument = async (docId, fileUrl) => {
     <!-- View Claims Modal -->
     <div v-if="isViewClaimsModalOpen" class="fixed inset-0 z-50 overflow-y-auto">
       <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
-        <div class="fixed inset-0 transition-opacity bg-slate-900/40 backdrop-blur-sm" @click="closeViewClaims"></div>
+        <div class="fixed inset-0 transition-opacity bg-slate-900/40 backdrop-blur-sm"></div>
         <div class="relative inline-block w-full max-w-lg p-8 overflow-hidden text-left align-middle transition-all transform glass-panel rounded-3xl shadow-2xl">
           <div class="flex justify-between items-center mb-6">
             <h3 class="text-xl font-bold leading-6 text-slate-900 dark:text-slate-100 flex items-center">
@@ -440,7 +440,7 @@ const deleteDocument = async (docId, fileUrl) => {
     <!-- Documents Upload Modal -->
     <div v-if="isDocsModalOpen" class="fixed inset-0 z-50 overflow-y-auto">
       <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
-        <div class="fixed inset-0 transition-opacity bg-slate-900/40 backdrop-blur-sm" @click="closeDocsModal"></div>
+        <div class="fixed inset-0 transition-opacity bg-slate-900/40 backdrop-blur-sm"></div>
         <div class="relative inline-block w-full max-w-2xl p-8 overflow-hidden text-left align-middle transition-all transform glass-panel rounded-3xl shadow-2xl">
           <div class="flex justify-between items-center mb-6">
             <h3 class="text-xl font-bold leading-6 text-slate-900 dark:text-slate-100 flex items-center">

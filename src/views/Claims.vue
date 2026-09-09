@@ -226,7 +226,7 @@ const handleDelete = async (id) => {
     <!-- Modal -->
     <div v-if="isModalOpen" class="fixed inset-0 z-50 overflow-y-auto">
       <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
-        <div class="fixed inset-0 transition-opacity bg-slate-900/40 backdrop-blur-sm" @click="closeModal"></div>
+        <div class="fixed inset-0 transition-opacity bg-slate-900/40 backdrop-blur-sm"></div>
         <div class="relative inline-block w-full max-w-lg p-8 overflow-hidden text-left align-middle transition-all transform glass-panel rounded-3xl shadow-2xl">
           <div class="flex justify-between items-center mb-6">
             <h3 class="text-xl font-bold leading-6 text-slate-900 dark:text-slate-100">
