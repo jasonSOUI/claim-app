@@ -257,22 +257,24 @@ const deleteDocument = async (docId, fileUrl) => {
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-lg text-slate-900 dark:text-slate-100 text-right font-mono font-bold">${{ item.amount.toLocaleString() }}</td>
               <td class="px-6 py-4 text-lg text-slate-500 dark:text-slate-400 max-w-xs truncate">{{ item.notes }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-lg font-medium flex justify-end items-center space-x-1">
-                <!-- 文件管理按鈕 -->
-                <button @click="openDocsModal(item)" class="relative text-amber-600 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-300 p-2 rounded-xl hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors" title="管理單據文件">
-                  <Paperclip class="w-4 h-4" />
-                  <span v-if="item.claim_treatment_documents?.length" class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white">
-                    {{ item.claim_treatment_documents.length }}
-                  </span>
-                </button>
-                
-                <!-- 查看理賠按鈕 -->
-                <button @click="openViewClaims(item)" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 dark:hover:text-emerald-300 p-2 rounded-xl hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors" title="查看關聯理賠">
-                  <Search class="w-4 h-4" />
-                </button>
-                
-                <button @click="openModal(item)" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 p-2 rounded-xl hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors" title="編輯"><Edit2 class="w-4 h-4" /></button>
-                <button @click="handleDelete(item.id)" class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 p-2 rounded-xl hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors" title="刪除"><Trash2 class="w-4 h-4" /></button>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-lg font-medium">
+                <div class="flex justify-end items-center space-x-1">
+                  <!-- 文件管理按鈕 -->
+                  <button @click="openDocsModal(item)" class="relative text-amber-600 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-300 p-2 rounded-xl hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors" title="管理單據文件">
+                    <Paperclip class="w-4 h-4" />
+                    <span v-if="item.claim_treatment_documents?.length" class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white">
+                      {{ item.claim_treatment_documents.length }}
+                    </span>
+                  </button>
+                  
+                  <!-- 查看理賠按鈕 -->
+                  <button @click="openViewClaims(item)" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 dark:hover:text-emerald-300 p-2 rounded-xl hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors" title="查看關聯理賠">
+                    <Search class="w-4 h-4" />
+                  </button>
+                  
+                  <button @click="openModal(item)" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 p-2 rounded-xl hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors" title="編輯"><Edit2 class="w-4 h-4" /></button>
+                  <button @click="handleDelete(item.id)" class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 p-2 rounded-xl hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors" title="刪除"><Trash2 class="w-4 h-4" /></button>
+                </div>
               </td>
             </tr>
           </tbody>
