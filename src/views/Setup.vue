@@ -29,39 +29,39 @@ const handleSave = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 glass-bg">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
-      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-white">
         設定資料庫連線
       </h2>
-      <p class="mt-2 text-center text-lg text-gray-600">
+      <p class="mt-2 text-center text-lg text-white/80 font-medium">
         將資料安全儲存在您的個人 Supabase
       </p>
     </div>
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-      <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <div class="glass-panel py-8 px-4 shadow-2xl sm:rounded-3xl sm:px-10">
         <form class="space-y-6" @submit.prevent="handleSave">
           <div>
-            <label class="block text-lg font-medium text-gray-700">Supabase URL</label>
-            <div class="mt-1">
-              <input v-model="url" type="text" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand focus:border-brand sm:text-lg" placeholder="https://xxxx.supabase.co" />
+            <label class="block text-lg font-bold text-slate-700 dark:text-slate-300">Supabase URL</label>
+            <div class="mt-2">
+              <input v-model="url" type="text" required class="appearance-none block w-full px-4 py-3 glass-input rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand font-mono" placeholder="https://xxxx.supabase.co" />
             </div>
           </div>
 
           <div>
-            <label class="block text-lg font-medium text-gray-700">Anon Key</label>
-            <div class="mt-1">
-              <input v-model="key" type="password" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand focus:border-brand sm:text-lg" placeholder="eyJhbGciOi..." />
+            <label class="block text-lg font-bold text-slate-700 dark:text-slate-300">Anon Key</label>
+            <div class="mt-2">
+              <input v-model="key" type="password" required class="appearance-none block w-full px-4 py-3 glass-input rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand font-mono" placeholder="eyJhbGciOi..." />
             </div>
           </div>
           
-          <div v-if="errorMsg" class="text-red-500 text-lg">
+          <div v-if="errorMsg" class="text-red-400 font-bold bg-red-900/20 p-3 rounded-lg text-center">
             {{ errorMsg }}
           </div>
 
-          <div>
-            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-brand hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition-colors">
+          <div class="pt-2">
+            <button type="submit" class="w-full flex justify-center py-3 px-4 rounded-xl shadow-lg shadow-brand/30 text-lg font-bold text-white bg-brand hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition-all transform hover:scale-105 active:scale-95">
               儲存並進入系統
             </button>
           </div>
